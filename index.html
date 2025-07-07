@@ -1,163 +1,193 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NEON GAMES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkZone - Game Hub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b0f1a;
+      color: #f0f0f0;
+    }
 
-        body {
-            font-family: 'Orbitron', sans-serif;
-            background: radial-gradient(ellipse at top, #0a0a0a 0%, #000000 100%);
-            color: #f0f0f0;
-        }
+    header {
+      background: linear-gradient(to right, #1f0036, #000000);
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 0 30px #ff00cc55;
+    }
 
-        header {
-            text-align: center;
-            padding: 60px 20px 30px;
-        }
+    header h1 {
+      font-size: 2.8rem;
+      color: #ff00cc;
+      text-shadow: 0 0 10px #ff00cc, 0 0 20px #ff00cc;
+    }
 
-        header h1 {
-            font-size: 3rem;
-            color: #00f7ff;
-            text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
-        }
+    nav {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+    }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: #111;
-            padding: 15px 0;
-            border-top: 2px solid #444;
-            border-bottom: 2px solid #444;
-        }
+    nav a {
+      color: #bbb;
+      text-decoration: none;
+      margin: 0 25px;
+      padding: 10px 5px;
+      transition: 0.3s;
+      position: relative;
+    }
 
-        nav a {
-            margin: 0 20px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 1rem;
-            position: relative;
-            transition: color 0.3s ease;
-        }
+    nav a:hover {
+      color: #00ffff;
+    }
 
-        nav a::after {
-            content: "";
-            display: block;
-            height: 2px;
-            width: 0%;
-            background: #00f7ff;
-            transition: width 0.3s;
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-        }
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background: #00ffff;
+      transition: width 0.3s ease;
+    }
 
-        nav a:hover {
-            color: #00f7ff;
-        }
+    nav a:hover::after {
+      width: 100%;
+    }
 
-        nav a:hover::after {
-            width: 100%;
-        }
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: url('https://images.unsplash.com/photo-1624274094883-df781b3a3a7b?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+      background-blend-mode: overlay;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
 
-        main {
-            max-width: 960px;
-            margin: 60px auto;
-            padding: 0 20px;
-            text-align: center;
-        }
+    .hero h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
 
-        .start-button {
-            margin-top: 40px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: #ff006a;
-            border: none;
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #ff006a, 0 0 20px #ff006a;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
+    .hero p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
 
-        .start-button:hover {
-            transform: scale(1.05);
-        }
+    .btn {
+      margin-top: 30px;
+      background-color: #ff00cc;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #ff00cc;
+      transition: 0.3s ease;
+    }
 
-        section {
-            margin-top: 40px;
-        }
+    .btn:hover {
+      background-color: #e600aa;
+      transform: scale(1.05);
+    }
 
-        section h2 {
-            color: #ffcc00;
-            margin-bottom: 10px;
-        }
+    .section {
+      max-width: 960px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
 
-        footer {
-            background-color: #111;
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            margin-top: 60px;
-            font-size: 0.9rem;
-        }
+    .section h3 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #ffcc00;
+      text-shadow: 0 0 5px #ffcc00;
+    }
 
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 2rem;
-            }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
 
-            nav {
-                flex-direction: column;
-                gap: 10px;
-            }
+    .card {
+      background-color: #1a1a2e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #222;
+      transition: transform 0.3s ease;
+    }
 
-            .start-button {
-                font-size: 1rem;
-                padding: 12px 30px;
-            }
-        }
-    </style>
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h4 {
+      margin-bottom: 10px;
+      color: #00ffff;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      background-color: #0e0e1a;
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 60px;
+    }
+  </style>
 </head>
-
 <body>
-    <header>
-        <h1>NEON GAMES</h1>
-        <p>당신만의 게임 세계에 오신 것을 환영합니다!</p>
-    </header>
+  <header>
+    <h1>DarkZone</h1>
+  </header>
 
-    <nav>
-        <a href="#">홈</a>
-        <a href="#">게임 목록</a>
-        <a href="#">랭킹</a>
-        <a href="#">고객센터</a>
-    </nav>
+  <nav>
+    <a href="#">홈</a>
+    <a href="#">게임 소개</a>
+    <a href="#">이벤트</a>
+    <a href="#">랭킹</a>
+    <a href="#">고객지원</a>
+  </nav>
 
-    <main>
-        <button class="start-button">게임 시작하기</button>
+  <section class="hero">
+    <h2>궁극의 게임 세계에 오신 걸 환영합니다</h2>
+    <p>강렬한 액션과 전략의 세계, 지금 바로 시작해보세요!</p>
+    <button class="btn">게임 시작</button>
+  </section>
 
-        <section>
-            <h2>🔥 인기 게임</h2>
-            <p>최신 트렌드의 게임들을 즐겨보세요. 다크한 스타일과 빠른 반응성으로 최고의 몰입감을 선사합니다.</p>
-        </section>
+  <section class="section">
+    <h3>🔥 인기 게임</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>Galaxy Warriors</h4>
+        <p>우주를 배경으로 한 전략 전투 게임. 은하계를 지배하라!</p>
+      </div>
+      <div class="card">
+        <h4>Shadow Blade</h4>
+        <p>은밀한 암살자들의 전쟁. 그림자 속에서 승리를 쟁취하라!</p>
+      </div>
+      <div class="card">
+        <h4>Cyber Drift</h4>
+        <p>사이버 도시를 질주하는 레이싱 게임. 속도의 한계를 넘어서라!</p>
+      </div>
+    </div>
+  </section>
 
-        <section>
-            <h2>👾 업데이트 소식</h2>
-            <p>새로운 캐릭터, 맵, 보스가 추가되었습니다! 지금 확인해보세요.</p>
-        </section>
-    </main>
-
-    <footer>
-        &copy; 2025 Neon Games. All rights reserved.
-    </footer>
+  <footer>
+    &copy; 2025 DarkZone. 모든 권리 보유.
+  </footer>
 </body>
-
 </html>
