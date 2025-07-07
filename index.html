@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEON GAMES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: radial-gradient(ellipse at top, #0a0a0a 0%, #000000 100%);
+            color: #f0f0f0;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #00f7ff;
+            text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #111;
+            padding: 15px 0;
+            border-top: 2px solid #444;
+            border-bottom: 2px solid #444;
+        }
+
+        nav a {
+            margin: 0 20px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: "";
+            display: block;
+            height: 2px;
+            width: 0%;
+            background: #00f7ff;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        nav a:hover {
+            color: #00f7ff;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .start-button {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #ff006a;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #ff006a, 0 0 20px #ff006a;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+        }
+
+        section {
+            margin-top: 40px;
+        }
+
+        section h2 {
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #111;
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            margin-top: 60px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .start-button {
+                font-size: 1rem;
+                padding: 12px 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>NEON GAMES</h1>
+        <p>당신만의 게임 세계에 오신 것을 환영합니다!</p>
+    </header>
+
+    <nav>
+        <a href="#">홈</a>
+        <a href="#">게임 목록</a>
+        <a href="#">랭킹</a>
+        <a href="#">고객센터</a>
+    </nav>
+
+    <main>
+        <button class="start-button">게임 시작하기</button>
+
+        <section>
+            <h2>🔥 인기 게임</h2>
+            <p>최신 트렌드의 게임들을 즐겨보세요. 다크한 스타일과 빠른 반응성으로 최고의 몰입감을 선사합니다.</p>
+        </section>
+
+        <section>
+            <h2>👾 업데이트 소식</h2>
+            <p>새로운 캐릭터, 맵, 보스가 추가되었습니다! 지금 확인해보세요.</p>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2025 Neon Games. All rights reserved.
+    </footer>
+</body>
+
+</html>
