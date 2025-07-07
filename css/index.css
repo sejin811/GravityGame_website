@@ -1,0 +1,142 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #0b0f1a;
+    color: #f0f0f0;
+}
+
+header {
+    background: linear-gradient(to right, #1f0036, #000000);
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 0 30px #ff00cc55;
+}
+
+header h1 {
+    font-size: 2.8rem;
+    color: #ff00cc;
+    text-shadow: 0 0 10px #ff00cc, 0 0 20px #ff00cc;
+}
+
+nav {
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+}
+
+nav a {
+    color: #bbb;
+    text-decoration: none;
+    margin: 0 25px;
+    padding: 10px 5px;
+    transition: 0.3s;
+    position: relative;
+}
+
+nav a:hover {
+    color: #00ffff;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: #00ffff;
+    transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: url('https://images.unsplash.com/photo-1624274094883-df781b3a3a7b?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+    background-blend-mode: overlay;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: #ccc;
+}
+
+.btn {
+    margin-top: 30px;
+    background-color: #ff00cc;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #ff00cc;
+    transition: 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #e600aa;
+    transform: scale(1.05);
+}
+
+.section {
+    max-width: 960px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.section h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-shadow: 0 0 5px #ffcc00;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #222;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h4 {
+    margin-bottom: 10px;
+    color: #00ffff;
+}
+
+.card p {
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #0e0e1a;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 60px;
+}
