@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gravity Game - 랭킹</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="icon" href="img/black-hole.png" type="image/png">
+    <style>
+        .ranking-section {
+            max-width: 960px;
+            margin: 60px auto;
+            padding: 0 20px;
+            color: #fff;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 12px 15px;
+            border: 1px solid #444;
+            text-align: center;
+        }
+
+        .ranking-table th {
+            background-color: #1a1a2e;
+            color: #00ffff;
+        }
+
+        .ranking-table tr:nth-child(even) {
+            background-color: #111827;
+        }
+
+        .ranking-table tr:nth-child(odd) {
+            background-color: #1f1f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gravity Game</h1>
+    </header>
+
+    <nav>
+        <a class="menu-button" href="index.html">홈</a>
+        <a class="menu-button" href="introduce_page.html">게임 소개</a>
+        <a class="menu-button" href="ranking.html">랭킹</a>
+        <a class="menu-button" href="official_community.html">공식 커뮤니티</a>
+    </nav>
+
+    <section class="ranking-section">
+        <h2> Gravity Game 랭킹</h2>
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>플레이어 이름</th>
+                    <th>최고 점수</th>
+                </tr>
+            </thead>
+            <tbody id="rankingBody">
+                <!-- 서버에서 불러온 데이터가 여기에 들어갑니다 -->
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        &copy; 2025 Gravity Game. 모든 권리 보유.
+    </footer>
+
+    <script type="module">
+        // 서버에서 랭킹 데이터를 가져오는 함수
+        async function fetchRanking() {
+            const tbody = document.getElementById("rankingBody");
+            // 이전 내용을 비웁니다.
+            tbody.innerHTML = '<tr><td colspan="3">랭킹을 불러오는 중...</td></tr>';
+
+            try {
+                // 로컬 서버 주소 
+                const response = await fetch('https://gravity-game-backend.onrender.com/get_ranking');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const rankingData = await response.json();
+
+                // 다시 내용을 비웁니다.
+                tbody.innerHTML = '';
+
+                if (rankingData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3">아직 등록된 랭킹이 없습니다.</td></tr>';
+                    return;
+                }
+
+                rankingData.forEach((entry, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${entry.name}</td>
+                        <td>${Math.floor(entry.score)}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("랭킹 데이터를 불러오는 데 실패했습니다:", error);
+                tbody.innerHTML = '<tr><td colspan="3">랭킹을 불러오는 데 실패했습니다. 서버가 실행 중인지 확인하세요.</td></tr>';
+            }
+        }
+
+        // 페이지가 로드되면 랭킹을 불러옵니다.
+        document.addEventListener("DOMContentLoaded", fetchRanking);
+    </script>
+</body>
+
+</html>
