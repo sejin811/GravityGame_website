@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gravity Game - 공식 커뮤니티</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <style>
+        .community-section {
+            max-width: 960px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .post-form textarea,
+        .post-form input[type="text"],
+        .post-form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #1a1a2e;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .post {
+            background: #111827;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .meta {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .like-btn,
+        .delete-btn {
+            background: none;
+            color: #ff00cc;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .delete-btn {
+            color: #ff5555;
+            margin-left: 10px;
+        }
+
+        .comments {
+            margin-top: 15px;
+            padding-left: 15px;
+            border-left: 2px solid #444;
+        }
+
+        .comment {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        .comment-time {
+            font-size: 0.7rem;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        #sortOrder {
+            float: right;
+            margin-bottom: 10px;
+            background-color: #1a1a2e;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .admin-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            background: none;
+            border: none;
+            color: #666;
+            opacity: 0.3;
+            z-index: 1000;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            opacity: 0.7;
+            color: #aaa;
+        }
+
+        .comment-name,
+        .comment-input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background-color: #1a1a2e;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gravity Game</h1>
+    </header>
+
+    <nav>
+        <a class="menu-button" href="index.html">홈</a>
+        <a class="menu-button" href="introduce_page.html">게임 소개</a>
+        <a class="menu-button" href="#">랭킹</a>
+        <a class="menu-button" href="official_community.html">공식 커뮤니티</a>
+    </nav>
+
+    <section class="community-section">
+        <h2>💬 공식 커뮤니티 게시판</h2>
+        <select id="sortOrder">
+            <option value="newest">최신순</option>
+            <option value="oldest">오래된순</option>
+        </select>
+
+        <form class="post-form" id="postForm">
+            <input type="text" id="postAuthor" placeholder="작성자 이름" required />
+            <input type="password" id="postPassword" placeholder="게시물 비밀번호 (4자리)" required pattern="\d{4}"
+                maxlength="4" />
+            <input type="text" id="postTitle" placeholder="제목을 입력하세요" required />
+            <textarea id="postContent" rows="4" placeholder="내용을 입력하세요" required></textarea>
+            <button class="btn" type="submit">게시하기</button>
+        </form>
+
+        <div id="postsContainer"></div>
+    </section>
+
+    <footer>
+        &copy; 2025 Gravity Game. 모든 권리 보유.
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            onValue,
+            update,
+            remove
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdQXBs0fNLppgBMPgK5JVdvSXc6gFpwDc",
+            authDomain: "gravitygame-12dfc.firebaseapp.com",
+            projectId: "gravitygame-12dfc",
+            storageBucket: "gravitygame-12dfc.appspot.com",
+            messagingSenderId: "297167375468",
+            appId: "1:297167375468:web:ffc1c0e7d2020046cfdc49",
+            databaseURL: "https://gravitygame-12dfc-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const postsRef = ref(db, "posts");
+
+        const form = document.getElementById("postForm");
+        const container = document.getElementById("postsContainer");
+        const sortOrder = document.getElementById("sortOrder");
+        let isAdmin = false;
+
+        // 해시 함수 (한 번만 선언)
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+        }
+
+        // 정확한 관리자 해시 (admin)
+        const ADMIN_PASSWORD_HASH = "1a36ea191cd5abd1c2ebd694de6dc5f1bb83661a77176d1b5524645b2ec00668";
+
+        // 관리자 로그인 버튼
+        const adminBtn = document.createElement("button");
+        adminBtn.textContent = "관리자 로그인";
+        adminBtn.className = "admin-btn";
+        adminBtn.onclick = async () => {
+            const pwd = prompt("관리자 비밀번호 입력");
+            if (!pwd) return;
+
+            const inputHash = await hashPassword(pwd);
+            if (inputHash === ADMIN_PASSWORD_HASH) {
+                isAdmin = true;
+                alert("관리자 로그인 성공");
+                renderPosts();
+            } else {
+                alert("비밀번호가 틀렸습니다.");
+            }
+        };
+        document.body.prepend(adminBtn);
+
+        // 게시글 업로드
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("postTitle").value.trim();
+            const content = document.getElementById("postContent").value.trim();
+            const author = document.getElementById("postAuthor").value.trim();
+            const password = document.getElementById("postPassword").value.trim();
+            const hashedPw = await hashPassword(password);
+
+            if (!title || !content || !author || !password) return;
+
+            const postData = {
+                title,
+                content,
+                author,
+                password: hashedPw,
+                likes: 0,
+                timestamp: Date.now(),
+                comments: []
+            };
+
+            push(postsRef, postData);
+            form.reset();
+        });
+
+        // 게시글 출력
+        function renderPosts() {
+            onValue(postsRef, (snapshot) => {
+                container.innerHTML = "";
+                const data = snapshot.val();
+                if (!data) return;
+
+                let keys = Object.keys(data);
+                keys.sort((a, b) => {
+                    return sortOrder.value === "newest"
+                        ? data[b].timestamp - data[a].timestamp
+                        : data[a].timestamp - data[b].timestamp;
+                });
+
+                keys.forEach((key) => {
+                    const post = data[key];
+                    const postDiv = document.createElement("div");
+                    postDiv.className = "post";
+                    const time = new Date(post.timestamp).toLocaleString();
+
+                    postDiv.innerHTML = `
+                        <h3>${post.title}</h3>
+                        <p>${post.content}</p>
+                        <div class="meta">${post.author} | 🕒 ${time}</div>
+                        <button class="like-btn" data-key="${key}">❤️ 좋아요 <span>${post.likes}</span></button>
+                        ${isAdmin ? `<button class="delete-btn" data-key="${key}">🗑️ 삭제</button>` : `<button class="delete-btn user" data-key="${key}">내 글 삭제</button>`}
+                        <div class="comments"></div>
+                        <input type="text" class="comment-name" placeholder="이름" />
+                        <input type="text" class="comment-input" placeholder="댓글 입력 후 Enter" />
+                     `;
+
+                    container.appendChild(postDiv);
+
+                    const likeBtn = postDiv.querySelector(".like-btn");
+                    const likedKey = `liked_${key}`;
+                    if (localStorage.getItem(likedKey)) likeBtn.disabled = true;
+
+                    likeBtn.addEventListener("click", () => {
+                        if (localStorage.getItem(likedKey)) return;
+                        update(ref(db, `posts/${key}`), {
+                            likes: post.likes + 1
+                        });
+                        localStorage.setItem(likedKey, true);
+                        likeBtn.disabled = true;
+                    });
+
+                    const commentsDiv = postDiv.querySelector(".comments");
+                    if (post.comments && Array.isArray(post.comments)) {
+                        post.comments.forEach((comment) => {
+                            const commentEl = document.createElement("div");
+                            commentEl.className = "comment";
+                            commentEl.innerHTML = `💬 <strong>${comment.name}</strong>: ${comment.text} <span class="comment-time">${new Date(comment.time).toLocaleTimeString()}</span>`;
+                            commentsDiv.appendChild(commentEl);
+                        });
+                    }
+
+                    const commentName = postDiv.querySelector(".comment-name");
+                    const commentInput = postDiv.querySelector(".comment-input");
+                    commentInput.addEventListener("keypress", async (e) => {
+                        if (e.key === "Enter" && commentInput.value.trim()) {
+                            const newComment = {
+                                name: commentName.value.trim() || "익명",
+                                text: commentInput.value.trim(),
+                                time: Date.now()
+                            };
+                            const updatedComments = post.comments || [];
+                            updatedComments.push(newComment);
+                            await update(ref(db, `posts/${key}`), { comments: updatedComments });
+                            renderPosts();
+                        }
+                    });
+
+                    const userDelBtn = postDiv.querySelector(".delete-btn.user");
+                    if (userDelBtn) {
+                        userDelBtn.addEventListener("click", async () => {
+                            const pw = prompt("게시글 작성 시 입력한 4자리 비밀번호를 입력하세요");
+                            if (!pw) return;
+                            const inputHash = await hashPassword(pw);
+                            if (inputHash === post.password) {
+                                if (confirm("정말 삭제하시겠습니까?")) {
+                                    remove(ref(db, `posts/${key}`));
+                                }
+                            } else {
+                                alert("비밀번호가 틀렸습니다.");
+                            }
+                        });
+                    }
+
+                    if (isAdmin) {
+                        const adminDelBtn = postDiv.querySelector(".delete-btn:not(.user)");
+                        if (adminDelBtn) {
+                            adminDelBtn.addEventListener("click", () => {
+                                if (confirm("정말 삭제하시겠습니까?")) {
+                                    remove(ref(db, `posts/${key}`));
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        sortOrder.addEventListener("change", renderPosts);
+        renderPosts();
+    </script>
+</body>
+
+</html>
